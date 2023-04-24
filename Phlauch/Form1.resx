@@ -57,10 +57,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="PictureBox1.InitialImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAMJJREFUWEft
+        0qEPwUEYxvGbLKuyoiiCQFAUwR/EfyRJgimSqiiKoCiKIPB9wm1mNu787n7M+2yfXbn39uzducA0scH1
+        AwtEpYUtnj0aIqpAGzv4B3R2EZIJogp0sIeGp8haoIcDNDhDBdkK9HGEhuaoQslSYIATNLBEDT7JCwxx
+        hi6vUMd9khYY4QJdXKOBxyQt4B9/R9ICOl9JWkCXi44VsAJWoPQCY/z3BoIKaF1FxzbwW5/Q/oBtoPQN
+        pPRNBZy7AVhs9GxLVLSvAAAAAElFTkSuQmCC
+</value>
+  </data>
   <metadata name="NotifyIcon1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="NotifyIcon1.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAEAgIAAAAEAIAAoCAEAFgAAACgAAACAAAAAAAEAAAEAIAAAAAAAAAABAPY6AQD2OgEAAAAAAAAA

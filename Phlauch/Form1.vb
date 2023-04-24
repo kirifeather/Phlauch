@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports System.Resources
 
 Public Class Form1
     Private WithEvents _globalHotkey As GlobalHotkey
@@ -33,6 +34,7 @@ Public Class Form1
         Label1.Text = "Phlauch"
 
         InitializePhrases()
+        PictureBox1.Image = PictureBox1.InitialImage
     End Sub
 
     Private Sub InitializePhrases()
@@ -61,7 +63,11 @@ Public Class Form1
                     Dim prc = New System.Diagnostics.ProcessStartInfo()
                     prc.FileName = x.ExePath
                     prc.Arguments = x.Argument
-                    Process.Start(prc)
+                    Try
+                        Process.Start(prc)
+                    Catch ex As Exception
+                        MessageBox.Show(ex.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    End Try
                 End If
                 Me.Visible = False
                 Exit For
@@ -96,11 +102,12 @@ Public Class Form1
                 Exit Sub
             End If
         Next
-        PictureBox1.Image = Nothing
         If Phrase.Text = "" Then
             Label1.Text = "Phlauch"
+            PictureBox1.Image = PictureBox1.InitialImage
         Else
             Label1.Text = ""
+            PictureBox1.Image = Nothing
         End If
     End Sub
 

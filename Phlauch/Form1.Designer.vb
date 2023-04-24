@@ -35,7 +35,7 @@ Partial Class Form1
         ' 
         ' PictureBox1
         ' 
-        PictureBox1.InitialImage = Nothing
+        PictureBox1.InitialImage = CType(resources.GetObject("PictureBox1.InitialImage"), Image)
         PictureBox1.Location = New Point(4, 4)
         PictureBox1.Margin = New Padding(0)
         PictureBox1.Name = "PictureBox1"
