@@ -1,21 +1,29 @@
 ﻿Imports System.IO
-Imports System.Resources
-
+''' <summary>
+''' メイン画面
+''' </summary>
 Public Class Form1
     Private WithEvents _globalHotkey As GlobalHotkey
     Private _setting As Setting
-
+    Private Const AppName As String = "Phlauch"
+    Private Const SettingPhrase As String = "Setting"
+    Private Const ExitPhrase As String = "Exit"
+    ''' <summary>
+    ''' グローバルホットキー処理の準備
+    ''' </summary>
     Public Sub New()
 
         ' この呼び出しはデザイナーで必要です。
         InitializeComponent()
 
         ' InitializeComponent() 呼び出しの後で初期化を追加します。
-
-        _globalHotkey = New GlobalHotkey(Me)
-        _setting = Setting.Load
+        _globalHotkey = New GlobalHotkey(Me)    'ハンドル作成前に呼び出す
     End Sub
-
+    ''' <summary>
+    ''' グローバルホットキーによる表示/非表示切り替え
+    ''' </summary>
+    ''' <param name="sender">イベント発生元インスタンス(GlobalHotkey)</param>
+    ''' <param name="e">ホットキーに対応するKeyEventArgs</param>
     Private Sub HookGlobalHotkey_HotkeyPressed(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles _globalHotkey.HotkeyPressed
         If Me.WindowState = FormWindowState.Normal AndAlso Me.Visible Then
             Me.Visible = False
@@ -26,17 +34,24 @@ Public Class Form1
             Me.Phrase.Focus()
         End If
     End Sub
-
+    ''' <summary>
+    ''' 起動時処理
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        _setting = Setting.Load
         _globalHotkey.UnregisterAllOriginalHotkey()
         '_globalHotkey.RegisterOriginalHotkey(Keys.IMEConvert, 28, GlobalHotkey.ModKeys.None)
         _globalHotkey.RegisterOriginalHotkey(Keys.CapsLock, 240, GlobalHotkey.ModKeys.None)
-        Label1.Text = "Phlauch"
+        Label1.Text = AppName
 
         InitializePhrases()
         PictureBox1.Image = PictureBox1.InitialImage
     End Sub
-
+    ''' <summary>
+    ''' フレーズ入力欄のオートコンプリート候補の再設定
+    ''' </summary>
     Private Sub InitializePhrases()
         Me.Phrase.AutoCompleteCustomSource.Clear()
 
@@ -44,22 +59,28 @@ Public Class Form1
             Me.Phrase.AutoCompleteCustomSource.Add(x.Phrase)
         Next
     End Sub
-
+    ''' <summary>
+    ''' フレーズに応じたプロセスを実行
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub OkButton_Click(sender As Object, e As EventArgs) Handles ButtonOk.Click
         Dim word = Trim(Me.Phrase.Text)
         Me.Phrase.Text = ""
-        Label1.Text = "Phlauch"
-        For i = 0 To _setting.Phrases.Count - 1
-            Dim x = _setting.Phrases(i)
+        Label1.Text = AppName
+        Dim settingFlag = False
+        For Each x In _setting.Phrases
             If String.Equals(word, x.Phrase, StringComparison.OrdinalIgnoreCase) Then
                 If x.IsDefault Then
+                    '初期登録コマンドの実行
                     Select Case x.Phrase
-                        Case "Setting"
-                            EditSetting()
-                        Case "Exit"
+                        Case SettingPhrase
+                            settingFlag = True
+                        Case ExitPhrase
                             Me.Close()
                     End Select
                 Else
+                    'ユーザー登録コマンドの実行
                     Dim prc = New System.Diagnostics.ProcessStartInfo()
                     prc.FileName = x.ExePath
                     prc.Arguments = x.Argument
@@ -74,8 +95,14 @@ Public Class Form1
                 Exit For
             End If
         Next
+        'フレーズ列挙操作中のアイテム変更を避けるため最後に処理
+        If settingFlag Then
+            EditSetting()
+        End If
     End Sub
-
+    ''' <summary>
+    ''' 設定画面の表示と設定の保存
+    ''' </summary>
     Private Sub EditSetting()
         Using dlg = New SettingForm
             dlg._setting = Me._setting
@@ -85,11 +112,20 @@ Public Class Form1
             End If
         End Using
     End Sub
+    ''' <summary>
+    ''' Escボタンによる非表示
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub CancelButton_Click(sender As Object, e As EventArgs) Handles ButtonCancel.Click
         Me.Phrase.Text = ""
         Me.Visible = False
     End Sub
-
+    ''' <summary>
+    ''' フレーズ入力中の処理。アイコンや表示文言の変更
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub Phrase_TextChanged(sender As Object, e As EventArgs) Handles Phrase.TextChanged
         Dim word = Trim(Me.Phrase.Text)
         For Each x In _setting.Phrases
@@ -104,14 +140,18 @@ Public Class Form1
             End If
         Next
         If Phrase.Text = "" Then
-            Label1.Text = "Phlauch"
+            Label1.Text = AppName
             PictureBox1.Image = PictureBox1.InitialImage
         Else
             Label1.Text = ""
             PictureBox1.Image = Nothing
         End If
     End Sub
-
+    ''' <summary>
+    ''' 表示時に画面の表示域に収まっていなければ真ん中へ移動
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub Form1_VisibleChanged(sender As Object, e As EventArgs) Handles MyBase.VisibleChanged
         If Me.Visible Then
             If Not IsOnScreen() Then
@@ -121,12 +161,19 @@ Public Class Form1
             End If
         End If
     End Sub
-
+    ''' <summary>
+    ''' 起動時のフォームを非表示
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub Form1_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Me.Visible = False
         Me.Opacity = 100
     End Sub
-
+    ''' <summary>
+    ''' 画面の表示域に収まっているか判定
+    ''' </summary>
+    ''' <returns></returns>
     Private Function IsOnScreen()
         For Each s In System.Windows.Forms.Screen.AllScreens
             If s.WorkingArea.Contains(New Rectangle(Me.Location, Me.Size)) Then
@@ -135,12 +182,21 @@ Public Class Form1
         Next
         Return False
     End Function
-
+    ''' <summary>
+    ''' タスクトレイアイコンクリックにより表示/非表示切り替え
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub NotifyIcon1_MouseClick(sender As Object, e As MouseEventArgs) Handles NotifyIcon1.MouseClick
         HookGlobalHotkey_HotkeyPressed(Nothing, Nothing)
     End Sub
-
+    ''' <summary>
+    ''' 終了時処理。グローバルホットキーの登録解除
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub Form1_Closed(sender As Object, e As EventArgs) Handles MyBase.Closed
         _globalHotkey.UnregisterAllOriginalHotkey()
+        _globalHotkey.Dispose()
     End Sub
 End Class

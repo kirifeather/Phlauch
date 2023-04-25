@@ -1,4 +1,7 @@
-﻿Public Class GlobalHotkey
+﻿''' <summary>
+''' グローバルホットキーの処理
+''' </summary>
+Public Class GlobalHotkey
     Inherits NativeWindow
     Implements IDisposable
 

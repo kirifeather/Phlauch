@@ -1,12 +1,15 @@
-﻿Imports System.Configuration
-Imports System.IO
-Imports System.Net.WebRequestMethods
-
+﻿''' <summary>
+''' 設定の保持、ファイルへの書き出し、読み出し
+''' </summary>
 <Serializable()>
 Public Class Setting
     Public Property Phrases As New List(Of PhraseItem)
 
     Private Shared lockObj As New Object
+    ''' <summary>
+    ''' 設定の読み出し
+    ''' </summary>
+    ''' <returns></returns>
     Public Shared Function Load() As Setting
         Try
             SyncLock lockObj
@@ -29,6 +32,9 @@ Public Class Setting
             Return instance
         End Try
     End Function
+    ''' <summary>
+    ''' 設定の書き出し
+    ''' </summary>
     Public Sub Save()
         Dim cnt As Integer = 0
         Dim err As Boolean = False
@@ -69,9 +75,11 @@ Public Class Setting
             End Try
         Loop While err
     End Sub
-
+    ''' <summary>
+    ''' 設定の初期化
+    ''' </summary>
     Public Sub Initialize()
         Phrases.Add(New PhraseItem() With {.IsDefault = True, .Phrase = "Setting", .Description = "設定画面を開く"})
-        Phrases.Add(New PhraseItem() With {.IsDefault = True, .Phrase = "Exit", .Description = "Phlauchを終了する"})
+        Phrases.Add(New PhraseItem() With {.IsDefault = True, .Phrase = "Exit", .Description = "アプリを終了する"})
     End Sub
 End Class

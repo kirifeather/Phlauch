@@ -1,8 +1,13 @@
-﻿Imports System.Globalization
-
+﻿''' <summary>
+''' 設定画面
+''' </summary>
 Public Class SettingForm
     Public Property _setting As Setting
-
+    ''' <summary>
+    ''' 初期化。設定からフレーズを読み出しソートしてリストへ設定
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub SettingForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim sorted = New SortedList(Of String, PhraseItem)
         For Each x In _setting.Phrases
@@ -12,14 +17,22 @@ Public Class SettingForm
             PhraseList.Items.Add(x.Value)
         Next
     End Sub
-
+    ''' <summary>
+    ''' フレーズ新規追加
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub ButtonNew_Click(sender As Object, e As EventArgs) Handles ButtonNew.Click
         Dim dlg = New PhraseEdit
         If dlg.ShowDialog = DialogResult.OK Then
             PhraseList.Items.Add(dlg.target)
         End If
     End Sub
-
+    ''' <summary>
+    ''' フレーズ編集
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub ButtonEdit_Click(sender As Object, e As EventArgs) Handles ButtonEdit.Click
         Dim dlg = New PhraseEdit
         If PhraseList.SelectedItem Is Nothing Then Exit Sub
@@ -32,13 +45,21 @@ Public Class SettingForm
             PhraseList.Items.Add(dlg.target)
         End If
     End Sub
-
+    ''' <summary>
+    ''' フレーズ削除
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub ButtonDelete_Click(sender As Object, e As EventArgs) Handles ButtonDelete.Click
         If PhraseList.SelectedItem Is Nothing Then Exit Sub
         If DirectCast(PhraseList.SelectedItem, PhraseItem).IsDefault Then Exit Sub
         PhraseList.Items.RemoveAt(PhraseList.SelectedIndex)
     End Sub
-
+    ''' <summary>
+    ''' 保存して終了。フレーズをソートして設定へ書き戻し
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub ButtonSave_Click(sender As Object, e As EventArgs) Handles ButtonSave.Click
         _setting.Phrases.Clear()
         Dim sorted = New SortedList(Of String, PhraseItem)
