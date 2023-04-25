@@ -63,6 +63,7 @@ Public Class Form1
                     Dim prc = New System.Diagnostics.ProcessStartInfo()
                     prc.FileName = x.ExePath
                     prc.Arguments = x.Argument
+                    prc.UseShellExecute = True
                     Try
                         Process.Start(prc)
                     Catch ex As Exception
