@@ -55,6 +55,7 @@ Partial Class Form1
         ' 
         ' Phrase
         ' 
+        Phrase.AcceptsTab = True
         Phrase.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         Phrase.AutoCompleteMode = AutoCompleteMode.SuggestAppend
         Phrase.AutoCompleteSource = AutoCompleteSource.CustomSource

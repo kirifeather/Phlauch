@@ -204,4 +204,18 @@ Public Class Form1
         _globalHotkey.UnregisterAllOriginalHotkey()
         _globalHotkey.Dispose()
     End Sub
+    ''' <summary>
+    ''' Tabキーで補完確定
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub Phrase_PreviewKeyDown(sender As Object, e As PreviewKeyDownEventArgs) Handles Phrase.PreviewKeyDown
+        If e.KeyCode = Keys.Tab Then
+            If Phrase.Text <> "" AndAlso Phrase.SelectedText <> "" Then
+                Phrase.Text += " "
+                Phrase.SelectionStart = Phrase.Text.Length
+                e.IsInputKey = True
+            End If
+        End If
+    End Sub
 End Class
