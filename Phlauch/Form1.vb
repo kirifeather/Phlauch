@@ -29,6 +29,7 @@ Public Class Form1
             Me.Visible = False
         ElseIf Form.ActiveForm Is Nothing Then
             Me.Visible = True
+            Me.Phrase.Text = ""
             Me.Activate()
             Me.BringToFront()
             Me.Phrase.Focus()
@@ -65,12 +66,12 @@ Public Class Form1
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub OkButton_Click(sender As Object, e As EventArgs) Handles ButtonOk.Click
-        Dim word = Trim(Me.Phrase.Text)
+        Dim words = Split(Trim(Me.Phrase.Text), " ", 2, CompareMethod.Binary)
         Me.Phrase.Text = ""
         Label1.Text = AppName
         Dim settingFlag = False
         For Each x In _setting.Phrases
-            If String.Equals(word, x.Phrase, StringComparison.OrdinalIgnoreCase) Then
+            If String.Equals(words(0), x.Phrase, StringComparison.OrdinalIgnoreCase) Then
                 If x.IsDefault Then
                     '初期登録コマンドの実行
                     Select Case x.Phrase
@@ -83,7 +84,11 @@ Public Class Form1
                     'ユーザー登録コマンドの実行
                     Dim prc = New System.Diagnostics.ProcessStartInfo()
                     prc.FileName = x.ExePath
-                    prc.Arguments = x.Argument
+                    If words.Length > 1 Then
+                        prc.Arguments = x.Argument & " " & words(1)
+                    Else
+                        prc.Arguments = x.Argument
+                    End If
                     prc.UseShellExecute = True
                     Try
                         Process.Start(prc)
@@ -127,9 +132,9 @@ Public Class Form1
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub Phrase_TextChanged(sender As Object, e As EventArgs) Handles Phrase.TextChanged
-        Dim word = Trim(Me.Phrase.Text)
+        Dim words = Split(Trim(Me.Phrase.Text), " ", 2, CompareMethod.Binary)
         For Each x In _setting.Phrases
-            If String.Equals(word, x.Phrase, StringComparison.OrdinalIgnoreCase) Then
+            If String.Equals(words(0), x.Phrase, StringComparison.OrdinalIgnoreCase) Then
                 Label1.Text = x.Description
                 Dim icoPath = If(Path.Exists(x.IconPath), x.IconPath, x.ExePath)
                 If Not Path.Exists(icoPath) Then Exit Sub
