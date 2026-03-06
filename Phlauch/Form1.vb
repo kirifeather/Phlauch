@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports System.Windows
 ''' <summary>
 ''' メイン画面
 ''' </summary>
@@ -82,28 +83,43 @@ Public Class Form1
                     End Select
                 Else
                     'ユーザー登録コマンドの実行
-                    Dim prc = New System.Diagnostics.ProcessStartInfo()
-                    prc.FileName = x.ExePath
                     If words.Length > 1 Then
-                        prc.Arguments = x.Argument & " " & words(1)
+                        ExecutePhrase(x, words(1))
                     Else
-                        prc.Arguments = x.Argument
+                        ExecutePhrase(x, "")
                     End If
-                    prc.UseShellExecute = True
-                    Try
-                        Process.Start(prc)
-                    Catch ex As Exception
-                        MessageBox.Show(ex.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                    End Try
                 End If
                 Me.Visible = False
                 Exit For
             End If
         Next
+        '未登録コマンドの実行（ファイル名を指定して実行の代わり）
+        If Me.Visible = True And settingFlag = False And Trim(words(0)) <> "" Then
+            Dim item = New PhraseItem
+            item.ExePath = words(0)
+            If words.Length > 1 Then item.Argument = words(1)
+            ExecutePhrase(item, "")
+            Me.Visible = False
+        End If
         'フレーズ列挙操作中のアイテム変更を避けるため最後に処理
         If settingFlag Then
             EditSetting()
         End If
+    End Sub
+    ''' <summary>
+    ''' コマンドの実行
+    ''' </summary>
+    Private Sub ExecutePhrase(pItem As PhraseItem, arg As String)
+        Dim prc = New System.Diagnostics.ProcessStartInfo()
+        prc.FileName = pItem.ExePath
+        prc.Arguments = pItem.Argument
+        If Trim(arg) <> "" Then prc.Arguments = prc.Arguments & " " & arg
+        prc.UseShellExecute = True
+        Try
+            Process.Start(prc)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
     End Sub
     ''' <summary>
     ''' 設定画面の表示と設定の保存
